@@ -1,23 +1,22 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX 80
-
 int main(){
-    int n;
-    char OX[MAX];
-    scanf("%d", &n);
+    int t;
+    scanf("%d", &t);
     
-    for(int i=0; i<n; i++){
-        int sum=0, score=1;
+    char s[80];
+    for(int i=0; i<t; i++){
+        int sum=0, check=1;
+        scanf("%s", s);
         
-        scanf("%s", &OX);
-        for(int j=0; j<strlen(OX); j++){
-            if(OX[j] == 'O'){
-                sum += score;
-                score++;
+        for(int j=0; j<strlen(s); j++){
+            if(s[j]=='O') {
+                sum+=check;
+                check++;
             }
-            if(OX[j] == 'X') score=1;
+            if(s[j]=='X')
+                check=1;
         }
         printf("%d\n", sum);
     }
