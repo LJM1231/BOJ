@@ -1,0 +1,44 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int result[3];
+int size=0;
+
+int main(){
+    char ch[13];
+    scanf("%[^\n]", ch);
+    int len=strlen(ch);
+    
+    for(int i=0; i<len; i++){
+        if((i+1< len) && ch[i]=='1' && ch[i+1]=='0'){
+            result[size]==10;
+            size++;
+            i++;
+        }
+        else if(ch[i]>='0' && ch[i]<='9'){
+            result[size]=ch[i]-'0';
+            size++;
+        }
+        else if(ch[i]=='D'){
+            result[size-1] = result[size-1] * result[size-1];
+        }
+        else if(ch[i]=='T'){
+            result[size-1] = result[size-1] * result[size-1] * result[size-1];
+        }
+        else if(ch[i]=='*'){
+            if(size<=1){
+                result[size-1] *= 2;
+            }
+            else {
+                result[size-2] *= 2;
+                result[size-1] *= 2;
+            }
+        }
+        else if(ch[i] =='#'){
+            result[size-1] = result[size-1]*(-1);
+        }
+    }
+    
+    printf("%d\n", result[0]+result[1]+result[2]);
+}
