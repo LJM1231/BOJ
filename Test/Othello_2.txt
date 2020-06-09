@@ -1,0 +1,249 @@
+#include <iostream>
+
+#define NOT_EMPTY 1
+#define NOT_ADJACENT 2
+using namespace std;
+
+ostream& oth(ostream& stream)
+{
+    stream.width(2);
+    stream.fill(' ');
+    return stream;
+}
+
+struct Logic {
+    int** dat;
+    int size = 8;
+    int turn = 0;
+
+    void MakeData();
+    void DeleteData();
+	int put(int, int);
+	int getOpp(int);
+	int checkV(int, int, int);
+	int checkA(int, int, int, int);
+	void set(int, int, int, int, int);
+
+};
+
+void Logic::MakeData() {
+	dat = (int**)malloc(sizeof(int*) * size);
+	dat[0] = (int*)malloc(sizeof(int) * size * size);
+	for (int i = 1; i < size; i++) dat[i] = dat[i - 1] + size;
+
+	for (int x = 0; x < size; x++) {
+		for (int y = 0; y < size; y++) {
+			dat[x][y] = 0;
+		}
+	}
+	dat[3][3] = dat[4][4] = 1;
+	dat[4][3] = dat[3][4] = 2;
+}
+
+void Logic::DeleteData() {
+	free(dat[0]); 
+	free(dat); 
+}
+
+int Logic::getOpp(int kind)
+{
+	if (kind == 1) return 2;
+	else return 1;
+}
+
+int Logic::put(int positon, int kind) {
+	int x, y;
+	y = positon / 10 - 1;
+	x = positon % 10 - 1;
+
+	int valid = checkV(y, x, kind);
+
+	if (valid == 0) {
+		dat[y][x] = kind;
+		return 0;
+	}
+	else
+		return valid;
+}
+
+int Logic::checkV(int y, int x, int kind)
+{
+	if (dat[y][x] != 0) return NOT_EMPTY;
+
+	int ad = 0;
+	for (int dir = 0; dir < 8; dir++) {
+		int res = checkA(y, x, kind, dir);
+		if (res > 0) {
+			ad += res;
+
+			//둘러싸고 있는 돌들은 우리 돌로 바꾸기.
+			set(y, x, kind, dir, res);
+		}
+	}
+
+	if (ad == 0) return NOT_ADJACENT;
+
+	return 0;
+}
+
+int Logic::checkA(int y, int x, int kind, int dir)
+{
+	int nOppCount = 0;
+	int nMyCount = 0;
+
+	while (1)
+	{
+		switch (dir) {
+		case 0:
+			x--;
+			break;
+		case 1:
+			x++;
+			break;
+		case 2:
+			y--;
+			break;
+		case 3:
+			y++;
+			break;
+		case 4:
+			x--; y--;
+			break;
+		case 5:
+			x--; y++;
+			break;
+		case 6:
+			x++; y--;
+			break;
+		case 7:
+			x++; y++;
+			break;
+		default:
+			break;
+		}
+		if (x < 0 || y < 0 || x>7 || y>7)
+			break;
+
+		if (dat[y][x] == getOpp(kind))
+			nOppCount++;
+		else if (dat[y][x] == kind) {
+			nMyCount++;
+			break;
+		}
+		else //빈칸
+			break;
+	}
+	if (nOppCount > 0 && nMyCount == 1)
+		return nOppCount;
+	else
+		return 0;
+}
+
+void Logic::set(int y, int x, int kind, int dir, int res)
+{
+	int nCount = 0;
+
+	while (1)
+	{
+		switch (dir) {
+		case 0:
+			x--;
+			break;
+		case 1:
+			x++;
+			break;
+		case 2:
+			y--;
+			break;
+		case 3:
+			y++;
+			break;
+		case 4:
+			x--; y--;
+			break;
+		case 5:
+			x--; y++;
+			break;
+		case 6:
+			x++; y--;
+			break;
+		case 7:
+			x++; y++;
+			break;
+		default:
+			break;
+		}
+		dat[y][x] = kind;
+		nCount++;
+
+		if (nCount == res) break;
+	}
+}
+
+
+
+struct Render {
+	int** dat;
+	int size = 8;
+
+	void setData(int**);
+	void viewBoard();
+};
+
+void Render::setData(int** p) {
+	dat = p;
+}
+
+void Render::viewBoard() {
+	system("cls");
+	cout << oth << "";
+	for (int x = 0; x < 8; x++) {
+		cout << oth << x + 1;
+	}
+	cout << endl;
+
+	for (int y = 0; y < 8; y++) {
+		cout << oth << y + 1;
+		for (int x = 0; x < 8; x++) {
+			if (dat[y][x] == 0)
+				cout << oth << "";
+			else if (dat[y][x] == 1)
+				cout << oth << "O";
+			else
+				cout << oth << "X";
+		}
+		cout << endl;
+	}
+}
+
+int main() {
+	/*char pos[10];*/
+
+	Logic lg;
+	lg.MakeData();
+
+	Render rd;
+	rd.setData(lg.dat);
+
+	int input;
+	int kind = 0;
+
+	while (1) {
+		if (++kind > 2) kind = 1;
+
+		rd.viewBoard();
+		
+		if (kind == 1) cout << "Enter O position :";
+		else cout << "Enter X position :";
+
+		cin >> input;
+		int res = lg.put(input, kind);
+
+		if (res != 0)
+		{
+			kind--;
+			continue;
+		}
+	}
+	return 0;
+}

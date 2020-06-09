@@ -1,0 +1,164 @@
+#include <iostream>
+using namespace std;
+#define ROW 16
+#define COL 16
+
+int x;
+int y;
+
+struct Render {
+	int** dat;
+	void Init();
+	void Board();
+	void Map();
+	void setA();
+	void setB();
+	int check();
+};
+
+void Render::Init() {
+
+}
+
+void Render::Board() {
+	
+	for (int i = 0; i < ROW; i++) {
+		for (int j = 0; j < COL; j++) {
+			dat[i][j] = -1;
+		}
+	}
+}
+
+void Render::setA() {
+	cout << "Input Player1 : ";
+	cin >> x >> y;
+
+	if (dat[x][y] == -1) {
+		dat[x][y] = 1;
+	}
+	else {
+		cout << "잘못된 자리" << endl;
+		setA();
+	}
+}
+
+void Render::setB() {
+	cout << "Input Player2 : ";
+	cin >> x >> y;
+
+	if (dat[x][y] == -1) {
+		dat[x][y] = 2;
+	}
+	else {
+		cout << "잘못된 자리" << endl;
+		setB();
+	}
+}
+
+int Render::check() {
+	for (int i = 0; i < 16; i++) {
+		for (int j = 0; j < 16; j++) {
+			if (dat[i][j] == 1 && dat[i][j + 1] == 1 && dat[i][j + 2] == 1 && dat[i][j + 3] == 1 && dat[i][j + 4] == 1) {
+				cout << "Player1 win!!" << endl;
+				exit(0);
+			}
+			else if (dat[j][i] == 1 && dat[j + 1][i] == 1 && dat[j + 2][i] == 1 && dat[j + 3][i] == 1 && dat[j + 4][i] == 1) {
+				cout << "Player1 win!!" << endl;
+				exit(0);
+			}
+			else if (dat[i][j] == 1 && dat[i + 1][j + 1] == 1 && dat[i + 2][j + 2] == 1 && dat[i + 3][j + 3] == 1 && dat[i + 4][j + 4] == 1) {
+				cout << "Player1 win!!" << endl;
+				exit(0);
+			}
+			else if (dat[i][j] == 1 && dat[i - 1][j + 1] == 1 && dat[i - 2][j + 2] == 1 && dat[i - 3][j + 3] == 1 && dat[i - 4][j + 4] == 1) {
+				cout << "Player1 win!!" << endl;
+				exit(0);
+			}
+		}
+	}
+
+	for (int i = 0; i < 16; i++) {
+		for (int j = 0; j < 16; j++) {
+			if (dat[i][j] == 2 && dat[i][j + 1] == 2 && dat[i][j + 2] == 2 && dat[i][j + 3] == 2 && dat[i][j + 4] == 2) {
+				cout << "Player2 win!!" << endl;
+				exit(0);
+			}
+			else if (dat[j][i] == 2 && dat[j + 1][i] == 2 && dat[j + 2][i] == 2 && dat[j + 3][i] == 2 && dat[j + 4][i] == 2) {
+				cout << "Player2 win!!" << endl;
+				exit(0);
+			}
+			else if (dat[i][j] == 2 && dat[i + 1][j + 1] == 2 && dat[i + 2][j + 2] == 2 && dat[i + 3][j + 3] == 2 && dat[i + 4][j + 4] == 2) {
+				cout << "Player2 win!!" << endl;
+				exit(0);
+			}
+			else if (dat[i][j] == 2 && dat[i - 1][j + 1] == 2 && dat[i - 2][j + 2] == 2 && dat[i - 3][j + 3] == 2 && dat[i - 4][j + 4] == 2) {
+				cout << "Player2 win!!" << endl;
+				exit(0);
+			}
+		}
+	}
+}
+
+
+void Render::Map() {
+	system("cls");
+
+	cout << " 0 1 2 3 4 5 6 7 8 9 a b c d e f" << endl;
+	cout << "┌";
+	for (int i = 1; i < 15; i++) {
+		cout << "┬";
+	}
+	cout << "┐" << '0' << endl;
+
+	for (int j = 1; j < 15; j++) {
+		cout << "├";
+		for (int i = 1; i < 15; i++) {
+			if (dat[i][j] == -1) cout << "┼";
+			if (dat[i][j] == 1) cout << "○";
+			if (dat[i][j] == 2) cout << "●";
+		}
+		if (COL <= 10) cout << "┤" << j << endl;
+		else cout << "┤" << j << hex << endl;
+	}
+
+	cout << "└";
+	for (int i = 1; i < 15; i++) {
+		cout << "┴";
+	}
+	cout << "┘" << 'f' << endl;
+}
+
+int main() {
+	int turn = 1;
+	int count = 0;
+
+	Render Render;
+	Render.dat = (int**) new int* [ROW];
+	for (int i = 0; i < ROW; i++) {
+		Render.dat[i] = (int*) new int* [ROW * COL];
+	}
+	for (int i = 0; i < ROW; i++) {
+		for (int j = 0; j < COL; j++) {
+			Render.dat[i][j] = -1;
+		}
+	}
+
+	Render.Map();
+
+	while (1) {
+		if (turn == 1) {
+			Render.setA();
+			Render.Map();
+			turn++;
+			count++;
+		}
+		else if (turn == 2) {
+			Render.setB();
+			Render.Map();
+			turn--;
+			count++;
+		}
+		Render.check();
+		Render.Init();
+	}
+}

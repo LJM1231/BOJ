@@ -1,0 +1,152 @@
+
+#include <iostream>
+using namespace std;
+int x, y;
+int board[16][16];
+
+struct Logic {
+	void Board();
+};
+struct Render {
+	void drawBoard();
+	void setA();
+	void setB();
+	void Init();
+	int check();
+};
+
+void Render::Init() {
+
+}
+
+void Logic::Board() {
+	for (int i = 0; i < 16; i++) {
+		for (int j = 0; j < 16; j++) {
+			board[i][j] = -1;
+		}
+	}
+	x = 0;
+	y = 0;
+}
+
+void Render::setA() {
+	cout << "Input Player1: ";
+	cin >> x >> y;
+	if (board[x][y] == -1) {
+		board[x][y] = 1;
+	}
+	else if (board[x][y] != -1) {
+		cout << "잘못된 위치에 두었습니다. 다시 두세요" << endl;
+		setA();
+	}
+}
+
+void Render::setB() {
+	cout << "Input Player2: ";
+	cin >> x >> y;
+	if (board[x][y] == -1) {
+		board[x][y] = 2;
+	}
+	else if (board[x][y] != -1) {
+		cout << "잘못된 위치에 두었습니다. 다시 두세요" << endl;
+		setB();
+	}
+}
+
+int Render::check() {
+	for (int i = 0; i < 16; i++) {
+		for (int j = 0; j < 16; j++) {
+			if (board[i][j] == 1 && board[i][j + 1] == 1 && board[i][j + 2] == 1&& board[i][j + 3] == 1 && board[i][j + 4] == 1) {
+				cout << "Player1 win!!" << endl;
+				exit(0);
+			}
+			else if (board[j][i] == 1 && board[j+1][i] == 1 && board[j+2][i] == 1 && board[j+3][i] == 1 && board[j+4][i] == 1) {
+				cout << "Player1 win!!" << endl;
+				exit(0);
+			}
+			else if (board[i][j] == 1 && board[i+1][j + 1] == 1 && board[i+2][j + 2] == 1 && board[i+3][j + 3] == 1 && board[i+4][j + 4] == 1) {
+				cout << "Player1 win!!" << endl;
+				exit(0);
+			}
+			else if (board[i][j] == 1 && board[i - 1][j + 1] == 1 && board[i - 2][j + 2] == 1 && board[i - 3][j + 3] == 1 && board[i - 4][j + 4] == 1) {
+				cout << "Player1 win!!" << endl;
+				exit(0);
+			}
+		}
+	}
+
+	for (int i = 0; i < 16; i++) {
+		for (int j = 0; j < 16; j++) {
+			if (board[i][j] == 2 && board[i][j + 1] == 2 && board[i][j + 2] == 2 && board[i][j + 3] == 2 && board[i][j + 4] == 2) {
+				cout << "Player2 win!!" << endl;
+				exit(0);
+			}
+			else if (board[j][i] == 2 && board[j + 1][i] == 2 && board[j + 2][i] == 2 && board[j + 3][i] == 2 && board[j + 4][i] == 2) {
+				cout << "Player2 win!!" << endl;
+				exit(0);
+			}
+			else if (board[i][j] == 2 && board[i + 1][j + 1] == 2 && board[i + 2][j + 2] == 2 && board[i + 3][j + 3] == 2 && board[i + 4][j + 4] == 2) {
+				cout << "Player2 win!!" << endl;
+				exit(0);
+			}
+			else if (board[i][j] == 2 && board[i - 1][j + 1] == 2 && board[i - 2][j + 2] == 2 && board[i - 3][j + 3] == 2 && board[i - 4][j + 4] == 2) {
+				cout << "Player2 win!!" << endl;
+				exit(0);
+			}
+		}
+	}
+}
+
+void Render::drawBoard() {
+	system("cls");
+	cout << " 0 1 2 3 4 5 6 7 8 9 A B C D E F" << endl;
+	cout << "┌";
+	for (int i = 0; i < 15; i++) {
+		cout << "┬";
+	}
+	cout << "┐" << '0' << endl;
+	
+	for (int j = 0; j < 15; j++) {
+		cout << "├";
+		for (int i = 0; i < 15; i++) {
+			if (board[i][j] ==-1) cout << "┼";
+			if (board[i][j] == 1) cout << "○";
+			if (board[i][j] == 2) cout << "●";
+		}
+		cout << "┤";
+		cout << j + 1 << endl;
+	}
+	cout << "└";
+	for (int i = 0; i < 15; i++) {
+		cout << "┴";
+	}
+	cout << "┘" << 16 << endl;
+}
+
+int main() {
+	int x, y;
+	int turn = 1;
+	int count = 0;
+
+	Logic L1;
+	Render R1;
+	L1.Board();
+	R1.drawBoard();
+
+	while (1) {
+		if (turn == 1) {
+			R1.setA();
+			R1.drawBoard();
+			turn++;
+			count++;
+		}
+		else if (turn == 2) {
+			R1.setB();
+			R1.drawBoard();
+			turn--;
+			count++;
+		}
+		R1.check();
+		R1.Init();
+	}
+}
