@@ -1,46 +1,66 @@
 #include <iostream>
 #include <algorithm>
-#include <vector>
-#include <list>
+//#include <vector>
+//#include <deque>
+#include <stack>
 
 using namespace std;
 
-int main(){
+int main() {
     cin.tie(NULL);
     ios::sync_with_stdio(false);
     
     string str;
-    int M;
     cin >> str;
+    
+    int M;
     cin >> M;
     
-    list<char> l(str.begin(), str.end());
-    list<char>::iterator it = l.end();
+    stack<char> head;
+    stack<char> tail;
+    
+    for(int i=0; i<str.length(); i++){
+        head.push(str[i]);
+    }
     
     while(M--){
-        char input;
-        cin >> input;
+        char c;
+        cin >> c;
         
-        if(input == 'L'){
-            if(it!=l.begin()) it--;
-        }
-        else if(input == 'D'){
-            if(it!=l.end()) it++;
-        }
-        else if(input == 'B'){
-            if(it!= l.begin()){
-                l.erase(--it);
-                it++;
+        if(c == 'L'){
+            if(!head.empty()){
+                tail.push(head.top());
+                head.pop();
             }
         }
-        else if(input == 'P'){
-            char x;
-            cin >> x;
-            l.insert(it, x);
+        else if(c == 'D'){
+            if(!tail.empty()){
+                head.push(tail.top());
+                tail.pop();
+            }
+        }
+        else if(c == 'B'){
+            if(!head.empty()){
+                head.pop();
+            }
+        }
+        else if(c == 'P'){
+            cin >> c;
+            head.push(c);
         }
     }
     
-    for(auto x:l) cout << x;
+    while(!tail.empty()){
+        head.push(tail.top());
+        tail.pop();
+    }
     
-    return 0;
+    string answer;
+    while(!head.empty()){
+        answer += head.top();
+        head.pop();
+    }
+    reverse(answer.begin(), answer.end());
+    
+    cout << answer;
 }
